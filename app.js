@@ -190,6 +190,6 @@ app.listen(8080,()=>{
     console.log("server is listening to port 8080");
 })
 
-
 //joi can be used to validate our schema
 //It applies validation on individual fields
+
