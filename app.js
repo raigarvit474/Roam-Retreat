@@ -10,6 +10,8 @@ const ExpressError=require("./utils/ExpressError.js")
 // const Joi = require('joi');
 // const {listingSchema,reviewSchema}=require("./schema.js");
 // const Review=require("./models/review.js");
+const session=require("express-session");
+const flash=require("connect-flash");
 
 const listings=require("./routes/listing.js");
 const reviews=require("./routes/review.js")
@@ -33,8 +35,31 @@ app.use(methodOverride("_method"))
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+
+const sessionOptions={
+    secret:"mysuperscecretcode",
+    resave: false,
+    saveUninitialized: true,
+    cookie:{
+        expires:Date.now()+7*24*60*60*1000,
+        maxAge:7*24*60*60*1000,
+        //so this means ki hamari jo cookie hai usko browser 7 din tak save rakhega iska usecase ye hai ki for example agar hamne login kiya to kitni der tak login rehna chahiye uss browser mein hamara account ye cheez cookies define karti hain
+        httpOnly:true,//it is by default set to true
+    },
+};
+
 app.get("/",(req,res)=>{
     res.send("Hi i am root");
+})
+
+app.use(session(sessionOptions)); //so now we have included session with this project so cookies are associated with each session
+app.use(flash());//always use flash before routes because flash will be used with the help of routes 
+
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    res.locals.error=req.flash("error");
+    console.log(res.locals.success);
+    next();
 })
 
 // const validateListing=(req,res,next)=>{
@@ -193,3 +218,4 @@ app.listen(8080,()=>{
 //joi can be used to validate our schema
 //It applies validation on individual fields
 
+ 
