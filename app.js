@@ -70,7 +70,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
-    console.log(res.locals.success);
+    res.locals.currUser=req.user;//this is defined because we want to use req.user in ejs but we cannot directly use it so locals ki form mein use karenge
     next();
 });
 
