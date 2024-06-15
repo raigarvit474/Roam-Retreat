@@ -38,7 +38,8 @@ router.post("/login",saveRedirectUrl,passport.authenticate("local",{
     failureFlash:true,
 }),async(req,res)=>{
     req.flash("success","Welcome back to WanderLust! You are logged in!");
-    res.redirect(res.locals.redirectUrl);
+    let redirectUrl=res.locals.redirectUrl || "/listings"; //This is just to check so if redirectUrl is empty then we will go back to /listings because iska matlab hai ki hamne all listings wale page pe hi login kiya tha
+    res.redirect(redirectUrl);
 });
 
 router.get("/logout",(req,res,next)=>{

@@ -1,21 +1,12 @@
 const express=require("express");
 const router=express.Router({mergeParams:true});//mergeParams is set to true kyonki hamara review route id extract nhi kar paa rha tha listing ki because vo id app.js mein hi ruk jaa rhi thi kyonki common path hamne /listings/:id/reviews rakha tha jo ki app.js mein hi reh jaa rha tha therefore usse yaha laane ke liye mergeParams karna pada
 const wrapAsync=require("../utils/wrapAsync.js")
-const ExpressError=require("../utils/ExpressError.js")
-const {reviewSchema}=require("../schema.js");
+const ExpressError=require("../utils/ExpressError.js");
 const Review=require("../models/review.js");
 const Listing=require("../models/listing.js");
+const {validateReview}=require("../middleware.js");
 
 //Reviews
-const validateReview=(req,res,next)=>{
-    let {error}=reviewSchema.validate(req.body);//using joi
-    if(error){
-        let errMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errMsg);
-    }else{
-        next();
-    }
-};
 
 //POST Review Route
 router.post("/",validateReview,wrapAsync(async(req,res)=>{

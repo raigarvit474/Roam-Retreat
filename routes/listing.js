@@ -2,20 +2,7 @@ const express=require("express");
 const router=express.Router();
 const Listing=require("../models/listing.js");
 const wrapAsync=require("../utils/wrapAsync.js");
-const ExpressError=require("../utils/ExpressError.js");
-const {listingSchema,reviewSchema}=require("../schema.js");
-const {isLoggedIn}=require("../middleware.js")
-
-
-const validateListing=(req,res,next)=>{
-    let {error}=listingSchema.validate(req.body);//using joi
-    if(error){
-        let errMsg=error.details.map((el)=>el.message).join(",");
-        throw new ExpressError(400,errMsg);
-    }else{
-        next();
-    }
-}
+const {isLoggedIn,isOwner,validateListing}=require("../middleware.js")
 
 //Index Route
 router.get("/",wrapAsync(async (req,res)=>{
@@ -74,7 +61,7 @@ router.post("/",isLoggedIn,validateListing,wrapAsync(async (req,res,next)=>{
 ));//this create route is written for if we are sending requesting from some external sorce like hoppscotch to create a listing
 
 //EDIT ROUTE
-router.get("/:id/edit",isLoggedIn,wrapAsync(async (req,res)=>{
+router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
     let {id}=req.params;
     const listing=await Listing.findById(id);
     if(!listing){
@@ -85,18 +72,18 @@ router.get("/:id/edit",isLoggedIn,wrapAsync(async (req,res)=>{
 }))
 
 //Update Route
-router.put("/:id",isLoggedIn,validateListing,wrapAsync(async (req,res)=>{
+router.put("/:id",isLoggedIn,isOwner,validateListing,wrapAsync(async (req,res)=>{
     // if(!req.body.listing){
     //     throw new ExpressError(400,"Bad Request. Send valid data for listing");
     // }//we can remove this now because ab ham validateListing naam ka middleware use kar rahe hain for handling validation errors
     let {id}=req.params;
     await Listing.findByIdAndUpdate(id,{...req.body.listing})
     req.flash("success","Listing Updated!");
-    res.redirect("/listings");
+    res.redirect(`/listings/${id}`);
 }))
 
 //Delete Route
-router.delete("/:id",isLoggedIn,wrapAsync(async (req,res)=>{
+router.delete("/:id",isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
     let {id}=req.params;
     let deletedListing=await Listing.findByIdAndDelete(id);//to ab jaise hi ye findByIdandDelete call hoga kisi bhi listing ke liye to ye listing.js ke vo listingSchema.post wale mongoose middleware ko call karega aur vo iss listing ke corresponding saare ke saare reviews ko delete karega
     console.log(deletedListing);
