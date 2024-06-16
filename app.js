@@ -240,4 +240,5 @@ app.listen(8080,()=>{
 //joi can be used to validate our schema
 //It applies validation on individual fields
 
- 
+
+// Firstly we will make our create listing form capable of sending files from frontend to backend
