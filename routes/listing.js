@@ -6,26 +6,25 @@ const {isLoggedIn,isOwner,validateListing}=require("../middleware.js");
 
 const listingController=require("../controllers/listings.js")
 
-//Index Route
-router.get("/",wrapAsync(listingController.index))
+//First is Index Route and second is Create Route
+router
+    .route("/")
+    .get(wrapAsync(listingController.index))
+    .post(isLoggedIn,validateListing,wrapAsync(listingController.createListing));//this create route is written for if we are sending requesting from some external sorce like hoppscotch to create a listing
 
 //New Route
-router.get("/new",isLoggedIn,listingController.renderNewForm);
+router.get("/new",isLoggedIn,listingController.renderNewForm);//This will be above /:id routes because if not then new hi id ki tarah interpret ho jayega
 
-//Show Route
-router.get("/:id",wrapAsync(listingController.showListing));
+//get request is for showListing, put is for updateListing, delete is for delete listing
+router
+    .route("/:id")
+    .get(wrapAsync(listingController.showListing))
+    .put(isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing))
+    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
 
-//Create Route
-router.post("/",isLoggedIn,validateListing,wrapAsync(listingController.createListing));//this create route is written for if we are sending requesting from some external sorce like hoppscotch to create a listing
 
 //EDIT ROUTE
 router.get("/:id/edit",isLoggedIn,isOwner,wrapAsync(listingController.renderEditForm))
-
-//Update Route
-router.put("/:id",isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing))
-
-//Delete Route
-router.delete("/:id",isLoggedIn,isOwner,wrapAsync(listingController.destroyListing))
 
 
 module.exports=router;
