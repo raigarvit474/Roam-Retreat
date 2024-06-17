@@ -9,9 +9,8 @@ const listingSchema=new Schema({
     },
     description:String,
     image:{
-        type:String,
-        default:"https://www.pexels.com/photo/green-grass-near-trees-1770809/",
-        set: (v) => v==="" ? "https://www.pexels.com/photo/green-grass-near-trees-1770809/":v,
+        url:String,
+        filename:String,
     },
     price:Number,
     location:String,
