@@ -30,8 +30,13 @@ router.get("/new",isLoggedIn,listingController.renderNewForm);//This will be abo
 router
     .route("/:id")
     .get(wrapAsync(listingController.showListing))
-    .put(isLoggedIn,isOwner,validateListing,wrapAsync(listingController.updateListing))
-    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
+    .put(
+        isLoggedIn,
+        isOwner,
+        upload.single('listing[image]'),
+        validateListing,
+        wrapAsync(listingController.updateListing))
+    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));//upload .single is written before validate Listing taaki pehle multer hamari listing image ko save karaye aur uske baad ham validation ke liye jayein
 
 
 //EDIT ROUTE
