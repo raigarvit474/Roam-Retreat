@@ -2,6 +2,8 @@ if(process.env.NODE_ENV!="production"){
     require("dotenv").config();
 }
 
+const Listing=require("./models/listing.js");
+
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
@@ -180,7 +182,20 @@ app.use((req,res,next)=>{
 //     res.redirect("/listings"); 
 // }))
 //This all has been commented because it has been transferred to listing.js file in routes folder so we have shifted our routes to listing .js
-
+app.get('/listings/filter/:category', async (req, res) => {
+    const { category } = req.params;
+    
+    try {
+        // Fetch listings based on category
+        const listings = await Listing.find({ category:category }); // Assuming 'category' field matches the category names exactly
+        
+        res.render('listings/showAfterFilter.ejs', { allListings: listings });
+    } catch (err) {
+        console.error('Error fetching listings:', err);
+        // Handle error response as needed
+        res.status(500).send('Error fetching listings');
+    }
+});
 
 app.use("/listings",listingRouter);
 

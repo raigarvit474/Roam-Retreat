@@ -1,26 +1,69 @@
-const mongoose=require("mongoose");
-const initData=require("./data.js");
-const Listing=require("../models/listing.js");
+require("dotenv").config();
+const mongoose = require("mongoose");
+const initData = require("./data.js");
+const Listing = require("../models/listing.js");
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 
-const MONGO_URL="mongodb://127.0.0.1:27017/wanderlust";
+// Ensure MAP_TOKEN is set in your environment variables
+const mapToken = process.env.MAP_TOKEN;
 
-main().then(()=>{
+// Check if the token is present
+if (!mapToken) {
+    console.error('Mapbox access token (MAP_TOKEN) is missing or invalid.');
+    process.exit(1); // Exit the process if token is missing
+}
+
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+
+main().then(() => {
     console.log("Connected to DB");
-}).catch((err)=>{
-    console.log(err);
-})
+    initDB();
+}).catch((err) => {
+    console.error("Failed to connect to DB:", err);
+});
 
-async function main(){
+async function main() {
     await mongoose.connect(MONGO_URL);
 }
 
-const initDB=async()=>{
+const initDB = async () => {
     await Listing.deleteMany({});
-    initData.data=initData.data.map((obj)=>({
-        ...obj,
-        owner:'666d60d06f754fae45d8339e'
-    }));//to insert owner into each database
-    await Listing.insertMany(initData.data);
-    console.log("Data was Initialised");
-}
-initDB();
+
+    const listingsToInsert = [];
+
+    for (let i = 0; i < initData.data.length; i++) {
+        const listingData = initData.data[i];
+
+        // Use geocoding client to fetch latitude and longitude
+        try {
+            const response = await geocodingClient.forwardGeocode({
+                query: listingData.location,
+                limit: 1
+            }).send();
+
+            if (response.body && response.body.features && response.body.features.length > 0) {
+                listingData.geometry = {
+                    type: 'Point',
+                    coordinates: response.body.features[0].geometry.coordinates
+                };
+
+                listingsToInsert.push({
+                    ...listingData,
+                    owner: '666d60d06f754fae45d8339e' // Assuming this is your owner ID
+                });
+            } else {
+                console.error(`Geocoding failed for location: ${listingData.location}`);
+            }
+        } catch (error) {
+            console.error(`Error geocoding location ${listingData.location}:`, error);
+        }
+    }
+
+    if (listingsToInsert.length > 0) {
+        await Listing.insertMany(listingsToInsert);
+        console.log("Data was Initialized");
+    } else {
+        console.log("No valid listings to insert");
+    }
+};

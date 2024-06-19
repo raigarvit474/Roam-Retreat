@@ -11,7 +11,7 @@ module.exports.index=async (req,res)=>{
 
 module.exports.renderNewForm=(req,res)=>{
     
-    res.render("listings/new.ejs");
+    res.render("listings/new.ejs",{ listing: {} });
     
 }
 
@@ -51,19 +51,19 @@ module.exports.createListing=async (req,res,next)=>{
         // if(result.error){
         //     throw new ExpressError(400,result.error);
         // }
-
         let response=await geocodingClient.forwardGeocode({
             query: req.body.listing.location,
             limit: 1
           })
             .send()
-
+            
         let url=req.file.path;
         let filename=req.file.filename;
         const newListing=new Listing(req.body.listing);
+        console.log(req.body.listing.category);
         newListing.owner=req.user._id;
         newListing.image={url,filename};
-
+        newListing.category='Beaches';
         newListing.geometry=response.body.features[0].geometry;//ye value mapbox se aa rhi hai aur isse ham store kara rahe hain
 
         let savedListing=await newListing.save();
