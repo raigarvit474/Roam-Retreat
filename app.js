@@ -56,9 +56,9 @@ const sessionOptions={
     },
 };
 
-app.get("/",(req,res)=>{
-    res.send("Hi i am root");
-})
+// app.get("/",(req,res)=>{
+//     res.send("Hi i am root");
+// })
 
 app.use(session(sessionOptions)); //so now we have included session with this project so cookies are associated with each session
 app.use(flash());//always use flash before routes because flash will be used with the help of routes 
