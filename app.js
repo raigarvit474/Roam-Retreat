@@ -102,11 +102,15 @@ app.get('/listings/filter/:category', async (req, res) => {
 
 app.use("/listings",listingRouter);
 
-
+app.get('/', (req, res) => {
+    res.redirect('/listings');
+});
 
 
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
+
+
 
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page not Found"));
