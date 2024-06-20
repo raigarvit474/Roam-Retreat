@@ -15,7 +15,7 @@ module.exports.signup=async(req,res)=>{
             }
             req.flash("success","Welcome to WanderLust!");
             res.redirect("/listings");
-        });//when the login operation completes,registeredUser will be assigned to req.user
+        });
         
     } catch(e){
         req.flash("error",e.message);
@@ -30,7 +30,7 @@ module.exports.renderLoginForm=(req,res)=>{
 
 module.exports.login=async(req,res)=>{
     req.flash("success","Welcome back to WanderLust! You are logged in!");
-    let redirectUrl=res.locals.redirectUrl || "/listings"; //This is just to check so if redirectUrl is empty then we will go back to /listings because iska matlab hai ki hamne all listings wale page pe hi login kiya tha
+    let redirectUrl=res.locals.redirectUrl || "/listings"; 
     res.redirect(redirectUrl);
 };
 

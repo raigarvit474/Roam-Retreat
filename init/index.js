@@ -4,13 +4,13 @@ const initData = require("./data.js");
 const Listing = require("../models/listing.js");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 
-// Ensure MAP_TOKEN is set in your environment variables
+
 const mapToken = process.env.MAP_TOKEN;
 
-// Check if the token is present
+
 if (!mapToken) {
     console.error('Mapbox access token (MAP_TOKEN) is missing or invalid.');
-    process.exit(1); // Exit the process if token is missing
+    process.exit(1);
 }
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -50,7 +50,7 @@ const initDB = async () => {
 
                 listingsToInsert.push({
                     ...listingData,
-                    owner: '666d60d06f754fae45d8339e' // Assuming this is your owner ID
+                    owner: '666d60d06f754fae45d8339e'
                 });
             } else {
                 console.error(`Geocoding failed for location: ${listingData.location}`);

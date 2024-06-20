@@ -15,6 +15,11 @@ const listingSchema=new Schema({
     price:Number,
     location:String,
     country:String,
+    category:{
+        type: String,
+        enum: ['Latest','Trending', 'Rooms', 'Iconic Cities', 'Mountains', 'Castles', 'Camps', 'Farms', 'Amazing Pools', 'Arctic', 'Domes', 'Boats'],
+        required: true,
+    },
     reviews:[
         {
             type:Schema.Types.ObjectId,
@@ -27,8 +32,8 @@ const listingSchema=new Schema({
     },
     geometry: {
         type: {
-          type: String, // Don't do `{ location: { type: String } }`
-          enum: ['Point'], // 'location.type' must be 'Point'
+          type: String, 
+          enum: ['Point'], 
           required: true
         },
         coordinates: {
@@ -36,17 +41,18 @@ const listingSchema=new Schema({
           required: true
         }
     },
-    category: {
+    category:{
         type: String,
-        required: true
-    }
+        enum: ['Latest','Trending', 'Rooms', 'Iconic Cities', 'Mountains', 'Castles', 'Camps', 'Farms', 'Amazing Pools', 'Arctic', 'Domes', 'Boats'],
+        required: true,
+    },
 });
 
 listingSchema.post("findOneAndDelete",async(listing)=>{
     if(listing){
         await Review.deleteMany({_id:{$in:listing.reviews}});
     }
-});//This will delete all reviews for a listing whenever a listing is deleted as whenever a listing will be deleted then there will be findByIdAndDelete called so it will call this middleware as it has method-findOneAndDelete so this will delete all the reviews for that listing
+});
 
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports=Listing;

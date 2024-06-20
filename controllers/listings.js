@@ -11,7 +11,7 @@ module.exports.index=async (req,res)=>{
 
 module.exports.renderNewForm=(req,res)=>{
     
-    res.render("listings/new.ejs",{ listing: {} });
+    res.render("listings/new.ejs");
     
 }
 
@@ -31,39 +31,19 @@ module.exports.showListing=async (req,res)=>{
 }
 
 module.exports.createListing=async (req,res,next)=>{
-    // let {title, description, price, location, country}=req.body;
-        // if(!req.body.listing){
-        //     throw new ExpressError(400,"Bad Request. Send valid data for listing");
-        // }
-        // if(!newListing.title){
-        //     throw new ExpressError(400,"Title is missing");
-        // }
-        // if(!newListing.description){
-        //     throw new ExpressError(400,"Description is missing");
-        // }
-        // if(!newListing.location){
-        //     throw new ExpressError(400,"Location is missing");
-        // }
-        //these if blocks are one way of validation errors responses
-
-        // the second method is using joi
-        // let result=listingSchema.validate(req.body);//using joi
-        // if(result.error){
-        //     throw new ExpressError(400,result.error);
-        // }
         let response=await geocodingClient.forwardGeocode({
             query: req.body.listing.location,
             limit: 1
           })
             .send()
-            
+
         let url=req.file.path;
         let filename=req.file.filename;
+
         const newListing=new Listing(req.body.listing);
-        console.log(req.body.listing.category);
+        newListing.category='Latest';
         newListing.owner=req.user._id;
         newListing.image={url,filename};
-        newListing.category='Beaches';
         newListing.geometry=response.body.features[0].geometry;//ye value mapbox se aa rhi hai aur isse ham store kara rahe hain
 
         let savedListing=await newListing.save();
