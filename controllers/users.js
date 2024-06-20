@@ -1,4 +1,5 @@
 const User=require("../models/user.js");
+const Listing=require("../models/listing");
 
 module.exports.renderSignupForm=(req,res)=>{
     res.render("users/signup.ejs");
@@ -33,6 +34,11 @@ module.exports.login=async(req,res)=>{
     let redirectUrl=res.locals.redirectUrl || "/listings"; 
     res.redirect(redirectUrl);
 };
+
+module.exports.profile=async (req,res)=>{
+    const userListings=await Listing.find({});
+    res.render("users/profile.ejs",{userListings});
+}
 
 module.exports.logout=(req,res,next)=>{
     req.logout((err)=>{

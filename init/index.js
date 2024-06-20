@@ -13,7 +13,7 @@ if (!mapToken) {
     process.exit(1);
 }
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 main().then(() => {
@@ -24,7 +24,7 @@ main().then(() => {
 });
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 const initDB = async () => {
@@ -49,8 +49,7 @@ const initDB = async () => {
                 };
 
                 listingsToInsert.push({
-                    ...listingData,
-                    owner: '666d60d06f754fae45d8339e'
+                    ...listingData
                 });
             } else {
                 console.error(`Geocoding failed for location: ${listingData.location}`);
