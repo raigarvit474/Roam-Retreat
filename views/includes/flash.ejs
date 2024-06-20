@@ -1,17 +1,13 @@
-<!-- flash->success partial  -->
-<% if(success && success.length){ %> 
-    <!-- This if condition is used taaki khaali alert na print ho webpage pe and success is an array to isliye use kiya hai taaki success ki length>0 ho tabhi alert aaye -->
+
+<% if(success && success.length){ %>
     <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
         <%= success %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        <!-- This button is to dismiss the alert -->
-        <!-- alert-dismissible fade show - These classes were to form a dismissable alert -->
 
     </div>
 <% } %>
 
 
-<!-- flash->error partial  -->
 <% if(error && error.length){ %> 
     <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
         <%= error %>

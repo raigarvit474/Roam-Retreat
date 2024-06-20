@@ -6,7 +6,6 @@
 </script>
 <div class="row mt-4">
     <div class="col-8 offset-3">
-<!-- Row and col div has been created so that content center mein aa jaye -->
         <h3><%= listing.title %></h3>
     </div>
     <div class="card col-6 offset-3 show-card listing-card">
@@ -31,26 +30,21 @@
   </div>
 <% } %>
 
-<!-- the below if condition is so that only those users can add a review who are logged in -->
   <div class="col-8 offset-3 mb-3">
       
 
-    <!-- the below if condition is so that only those users can add a review who are logged in -->
     <% if(currUser){ %>
       <hr>
       <h4>Leave a Review</h4>
       <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
-        <!-- Needs validation logic written in script.js -->
         <div class="mb-3 mt-3">
           <label for="rating" class="form-label">Rating</label>
           <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range">
-          <!-- class="form-range" is bootstrap class for range.It means ki jitni jagah lega rating wala bar -->
         </div>
         <div class="mb-3 mt-3">
           <label for="comment" class="form-label">Comments</label>
           <textarea name="review[comment]" id="comment" cols="30" rows="10" class="form-control" required></textarea>
           <div class="invalid-feedback">Please add some comments for review</div>
-          <!-- to abhi koi website se empty review nhi bhej sakta but abhi bhi hoppscotch se bheja jaa sakta hai empty review therefore server side validation ki bhi zarurat hai-->
         </div>
         <button class="btn btn-outline-dark">Submit</button>
       </form>

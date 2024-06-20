@@ -5,8 +5,7 @@ const {listingSchema,reviewSchema}=require("./schema.js");
 
 module.exports.isLoggedIn=(req,res,next)=>{
     if(!req.isAuthenticated()){
-        //redirectUrl will be saved here 
-        req.session.redirectUrl=req.originalUrl;//store karali URL jispe jaane ki vajah se login karna pad rha hai 
+        req.session.redirectUrl=req.originalUrl;
         req.flash("error","You must be logged in to create a listing");
         return res.redirect("/login");
     }
@@ -19,7 +18,6 @@ module.exports.saveRedirectUrl=(req,res,next)=>{
     }
     next();
 };
-//res.locals mein save karvana pada because passport login ke time req.session ko reset kar deta hai therefore url access nhi kar paate but locals pe passport ka access nhi  hota hai issiliye locals mein store karva diya
 
 module.exports.isOwner=async(req,res,next)=>{
     let {id}=req.params;
@@ -42,7 +40,7 @@ module.exports.validateListing=(req,res,next)=>{
 };
 
 module.exports.validateReview=(req,res,next)=>{
-    let {error}=reviewSchema.validate(req.body);//using joi
+    let {error}=reviewSchema.validate(req.body);
     if(error){
         let errMsg=error.details.map((el)=>el.message).join(",");
         throw new ExpressError(400,errMsg);

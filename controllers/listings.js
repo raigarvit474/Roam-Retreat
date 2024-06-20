@@ -20,8 +20,7 @@ module.exports.showListing=async (req,res)=>{
     const listing=await Listing.findById(id).populate({
         path:"reviews",
         populate:{path:"author"},
-        //This is nexted populate taaki har review ke saath uska Author bhi aaye
-    }).populate("owner");//i.e jab bhi listing aa rhi hogi to uske saath saare reviews and listing ka owner dono aayenge
+    }).populate("owner");
     if(!listing){
         req.flash("error","Listing you requested for does not exist!");
         res.redirect("/listings");
@@ -44,14 +43,13 @@ module.exports.createListing=async (req,res,next)=>{
         newListing.category='Latest';
         newListing.owner=req.user._id;
         newListing.image={url,filename};
-        newListing.geometry=response.body.features[0].geometry;//ye value mapbox se aa rhi hai aur isse ham store kara rahe hain
+        newListing.geometry=response.body.features[0].geometry;
 
         let savedListing=await newListing.save();
         console.log(savedListing);
         
         req.flash("success","New Listing Created!");
         res.redirect("/listings");
-    //to handle error--> validation errors
 }
 
 module.exports.renderEditForm=async (req,res)=>{
@@ -68,9 +66,6 @@ module.exports.renderEditForm=async (req,res)=>{
 }
 
 module.exports.updateListing=async (req,res)=>{
-    // if(!req.body.listing){
-    //     throw new ExpressError(400,"Bad Request. Send valid data for listing");
-    // }//we can remove this now because ab ham validateListing naam ka middleware use kar rahe hain for handling validation errors
     let {id}=req.params;
     let listing=await Listing.findByIdAndUpdate(id,{...req.body.listing});
     
@@ -88,7 +83,7 @@ module.exports.updateListing=async (req,res)=>{
 
 module.exports.destroyListing=async (req,res)=>{
     let {id}=req.params;
-    let deletedListing=await Listing.findByIdAndDelete(id);//to ab jaise hi ye findByIdandDelete call hoga kisi bhi listing ke liye to ye listing.js ke vo listingSchema.post wale mongoose middleware ko call karega aur vo iss listing ke corresponding saare ke saare reviews ko delete karega
+    let deletedListing=await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
     req.flash("success","Listing Deleted!");
     res.redirect("/listings"); 

@@ -6,9 +6,9 @@ const {isLoggedIn,isOwner,validateListing}=require("../middleware.js");
 
 const listingController=require("../controllers/listings.js");
 
-const multer  = require('multer');//f orm ke data ko parse karne ke liye we are using multer
+const multer  = require('multer');
 const {storage}=require("../cloudConfig.js");
-const upload = multer({ storage });//to ab multer files ko jaake hamare cloudinary ki storage mein save karayega
+const upload = multer({ storage });
 
 
 //First is Index Route and second is Create Route
@@ -24,7 +24,7 @@ router
 
 
 //New Route
-router.get("/new",isLoggedIn,listingController.renderNewForm);//This will be above /:id routes because if not then new hi id ki tarah interpret ho jayega
+router.get("/new",isLoggedIn,listingController.renderNewForm);
 
 //get request is for showListing, put is for updateListing, delete is for delete listing
 router
@@ -36,7 +36,7 @@ router
         upload.single('listing[image]'),
         validateListing,
         wrapAsync(listingController.updateListing))
-    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));//upload .single is written before validate Listing taaki pehle multer hamari listing image ko save karaye aur uske baad ham validation ke liye jayein
+    .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));
 
 
 //EDIT ROUTE
