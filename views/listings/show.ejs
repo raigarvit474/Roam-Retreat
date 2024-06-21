@@ -1,9 +1,29 @@
 <% layout("/layouts/boilerplate") %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script>
   const mapToken="<%=process.env.MAP_TOKEN%>"
   const listing=<%- JSON.stringify(listing) %>;
 
 </script>
+<style>
+    /* Add your CSS styling here */
+    .stay-selector {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 20px;
+      }
+      .stay-selector label {
+          margin-bottom: 5px;
+      }
+      .stay-selector input {
+          margin-bottom: 10px;
+      }
+      .total-price {
+          margin-top: 10px;
+          font-size: 18px;
+      }
+</style>
+
 <div class="row mt-4">
     <div class="col-8 offset-3">
         <h3><%= listing.title %></h3>
@@ -27,6 +47,22 @@
   <div class="btns">
       <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
       <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" ><button class="btn btn-dark offset-5 ">Delete</button></form>
+  </div>
+<% } else {%>
+  <div class="col-8 offset-3 mb-3">
+    <h4>Book this Property Now:</h4>
+    <br>
+    <div class="stay-selector">
+        <label for="startDate">Start Date:</label>
+        <input type="text" id="startDate" placeholder="Select start date" readonly>
+
+        <label for="endDate">End Date:</label>
+        <input type="text" id="endDate" placeholder="Select end date" readonly>
+    </div>
+    <div class="total-price">
+        Total Price: &#8377;<span id="totalPrice">0.00</span>
+        <button id="payButton" class="btn btn-dark col-2 edit-btn">Pay and Book</button>
+    </div>
   </div>
 <% } %>
 
@@ -75,4 +111,56 @@
     <div id="map"></div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  const pricePerNight = <%= listing.price %>;
+  const gstRate = 0.18;
+
+  document.addEventListener('DOMContentLoaded', () => {
+      const totalPriceSpan = document.getElementById('totalPrice');
+      const startDatePicker = document.getElementById('startDate');
+      const endDatePicker = document.getElementById('endDate');
+
+      let startFlatpickr;
+      let endFlatpickr;
+
+      function calculateTotalPrice() {
+          const startDate = flatpickr.parseDate(startDatePicker.value, "Y-m-d");
+          const endDate = flatpickr.parseDate(endDatePicker.value, "Y-m-d");
+
+          if (startDate && endDate) {
+              const timeDifference = endDate - startDate;
+              const days = Math.ceil(timeDifference / (1000 * 3600 * 24)); // Ensure correct day calculation
+
+              if (days > 0) {
+                  const totalPrice = days * (pricePerNight + (pricePerNight * gstRate));
+                  totalPriceSpan.textContent = totalPrice.toFixed(2);
+              } else {
+                  totalPriceSpan.textContent = "0.00";
+              }
+          }
+      }
+
+      startFlatpickr = flatpickr(startDatePicker, {
+          minDate: 'today',
+          onChange: function(selectedDates) {
+              if (selectedDates.length > 0) {
+                  const minEndDate = new Date(selectedDates[0]);
+                  minEndDate.setDate(minEndDate.getDate() + 1); // Set min end date to start date + 1 day
+                  endFlatpickr.set('minDate', minEndDate);
+                  calculateTotalPrice();
+              }
+          }
+      });
+
+      endFlatpickr = flatpickr(endDatePicker, {
+          minDate: 'today',
+          onChange: function() {
+              calculateTotalPrice();
+          }
+      });
+  });
+</script>
+
 <script src="/js/map.js"></script>
