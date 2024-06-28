@@ -6,23 +6,41 @@
 
 </script>
 <style>
-    /* Add your CSS styling here */
-    .stay-selector {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 20px;
-      }
-      .stay-selector label {
-          margin-bottom: 5px;
-      }
-      .stay-selector input {
-          margin-bottom: 10px;
-      }
-      .total-price {
-          margin-top: 10px;
-          font-size: 18px;
-      }
-</style>
+.stay-selector {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .stay-selector label {
+            margin-bottom: 5px;
+        }
+        .stay-selector input {
+            margin-bottom: 10px;
+        }
+        .price-details {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .price-details .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .price-details .price-item span {
+            font-weight: bold;
+        }
+        .total-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        #payButton:hover {
+            background-color: #eff2f5;
+        }
+  </style>
 
 <div class="row mt-4">
     <div class="col-8 offset-3">
@@ -54,15 +72,30 @@
     <br>
     <div class="stay-selector">
         <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" placeholder="Select start date" readonly>
+        <input type="text" id="startDate" placeholder="Select start date" class="col-2" readonly>
 
         <label for="endDate">End Date:</label>
-        <input type="text" id="endDate" placeholder="Select end date" readonly>
+        <input type="text" id="endDate" placeholder="Select end date" class="col-2" readonly>
     </div>
-    <div class="total-price">
-        Total Price: &#8377;<span id="totalPrice">0.00</span>
-        <button id="payButton" class="btn btn-dark col-2 edit-btn">Pay and Book</button>
+    <div class="price-details">
+        <div class="price-item">
+            <span>Base Price:</span>
+            &#8377;<span id="basePrice">0.00</span>
+        </div>
+        <div class="price-item">
+            <span>GST (18%):</span>
+            &#8377;<span id="gstAmount">0.00</span>
+        </div>
+        <div class="price-item total-price">
+            <span>Total Price:</span>
+            &#8377;<span id="totalPrice">0.00</span>
+        </div>
     </div>
+    <br>
+    <div id="payButton" class="total-price"> 
+      <button id="payButton" class="btn btn-dark col-3 offset-9 edit-btn">Pay and Book</button>
+    </div>
+    
   </div>
 <% } %>
 
@@ -112,12 +145,15 @@
   </div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   const pricePerNight = <%= listing.price %>;
   const gstRate = 0.18;
 
   document.addEventListener('DOMContentLoaded', () => {
+      const basePriceSpan = document.getElementById('basePrice');
+      const gstAmountSpan = document.getElementById('gstAmount');
       const totalPriceSpan = document.getElementById('totalPrice');
       const startDatePicker = document.getElementById('startDate');
       const endDatePicker = document.getElementById('endDate');
@@ -134,9 +170,16 @@
               const days = Math.ceil(timeDifference / (1000 * 3600 * 24)); // Ensure correct day calculation
 
               if (days > 0) {
-                  const totalPrice = days * (pricePerNight + (pricePerNight * gstRate));
+                  const basePrice = days * pricePerNight;
+                  const gstAmount = basePrice * gstRate;
+                  const totalPrice = basePrice + gstAmount;
+
+                  basePriceSpan.textContent = basePrice.toFixed(2);
+                  gstAmountSpan.textContent = gstAmount.toFixed(2);
                   totalPriceSpan.textContent = totalPrice.toFixed(2);
               } else {
+                  basePriceSpan.textContent = "0.00";
+                  gstAmountSpan.textContent = "0.00";
                   totalPriceSpan.textContent = "0.00";
               }
           }
