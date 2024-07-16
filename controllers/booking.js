@@ -10,6 +10,11 @@ module.exports.createBooking = async (req, res) => {
         req.flash('error', 'Listing not found.');
         return res.redirect('/listings');
     }
+    const isAvailable = await Booking.isDateRangeAvailable(listingId, new Date(startDate), new Date(endDate));
+    if (!isAvailable) {
+        req.flash('error', 'The selected date range is not available for booking.');
+        return res.redirect(`/listings/${listingId}`);
+    }
     const booking = new Booking({
         user: req.user._id,
         listing: listingId,

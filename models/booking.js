@@ -31,5 +31,16 @@ const bookingSchema = new Schema({
     },
 });
 
+bookingSchema.statics.isDateRangeAvailable = async function(listingId, startDate, endDate) {
+    const existingBookings = await this.find({
+        listing: listingId,
+        currentStatus: 'Booked',
+        $or: [
+            { startDate: { $lte: endDate }, endDate: { $gte: startDate } }
+        ]
+    });
+    return existingBookings.length === 0;
+};
+
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;

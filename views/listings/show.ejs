@@ -94,18 +94,23 @@
       <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" ><button class="btn btn-dark offset-5 ">Delete</button></form>
   </div>
   <div class="col-8 offset-3 mt-4">
+    <hr>
     <h4>Current bookings for this property:</h4>
     <div class="row">
-      <% bookings.forEach(booking => { %>
-        <div class="card col-5 ms-3 mb-3 booking-card">
-          <div class="card-body">
-            <p class="card-text"><strong>User:</strong> <%= booking.user.username %></p>
-            <p class="card-text"><strong>Start Date:</strong> <%= new Date(booking.startDate).toLocaleDateString() %></p>
-            <p class="card-text"><strong>End Date:</strong> <%= new Date(booking.endDate).toLocaleDateString() %></p>
-            <p class="card-text"><strong>Price:</strong> &#8377;<%= booking.price.toLocaleString("en-IN") %></p>
+      <% if(bookings.length>0){%>
+        <% bookings.forEach(booking => { %>
+          <div class="card col-5 ms-3 mb-3 booking-card">
+            <div class="card-body">
+              <p class="card-text"><strong>User:</strong> <%= booking.user.username %></p>
+              <p class="card-text"><strong>Start Date:</strong> <%= new Date(booking.startDate).toLocaleDateString() %></p>
+              <p class="card-text"><strong>End Date:</strong> <%= new Date(booking.endDate).toLocaleDateString() %></p>
+              <p class="card-text"><strong>Price:</strong> &#8377;<%= booking.price.toLocaleString("en-IN") %></p>
+            </div>
           </div>
-        </div>
-      <% }) %>
+        <% })%>
+      <% }else{  %>
+        <p>No Bookings for this Listing.</p>
+      <% } %>
     </div>
   </div>
 <% } else {%>
