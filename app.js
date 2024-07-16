@@ -21,6 +21,7 @@ const User=require("./models/user.js")
 const listingRouter=require("./routes/listing.js");
 const reviewRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
+const bookingRouter=require("./routes/booking.js");
 
 const dbUrl=process.env.ATLASDB_URL;
 
@@ -85,7 +86,6 @@ app.use((req,res,next)=>{
     next();
 });
 
-
 app.get('/listings/filter/:category', async (req, res) => {
     const { category } = req.params;
     
@@ -100,17 +100,17 @@ app.get('/listings/filter/:category', async (req, res) => {
     }
 });
 
+app.use("/listing/bookings",bookingRouter);
+
 app.use("/listings",listingRouter);
+
+app.use("/listings/:id/reviews",reviewRouter);
+
+app.use("/users", userRouter);
 
 app.get('/', (req, res) => {
     res.redirect('/listings');
 });
-
-
-app.use("/listings/:id/reviews",reviewRouter);
-
-
-app.use("/",userRouter);
 
 
 

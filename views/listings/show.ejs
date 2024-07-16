@@ -1,64 +1,62 @@
 <% layout("/layouts/boilerplate") %>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script>
-  const mapToken="<%=process.env.MAP_TOKEN%>"
-  const listing=<%- JSON.stringify(listing) %>;
-
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
 </script>
 <style>
 .stay-selector {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        .stay-selector label {
-            margin-bottom: 5px;
-        }
-        .stay-selector input {
-            margin-bottom: 10px;
-        }
-        .price-details {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        .price-details .price-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        .price-details .price-item span {
-            font-weight: bold;
-        }
-        .total-price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-        #payButton:hover {
-            background-color: #eff2f5;
-        }
-        #map {
-          width: 100%;
-          height: 400px; /* Default height for larger screens */
-        }
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+.stay-selector label {
+    margin-bottom: 5px;
+}
+.stay-selector input {
+    margin-bottom: 10px;
+}
+.price-details {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.price-details .price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.price-details .price-item span {
+    font-weight: bold;
+}
+.total-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+#payButton:hover {
+    background-color: #eff2f5;
+}
+#map {
+  width: 100%;
+  height: 400px; /* Default height for larger screens */
+}
 
-        @media (max-width: 768px) {
-          #map {
-            height: 300px; /* Adjust height for tablets */
-          }
-        }
+@media (max-width: 768px) {
+  #map {
+    height: 300px; /* Adjust height for tablets */
+  }
+}
 
-        @media (max-width: 576px) {
-          #map {
-            height: 200px; /* Adjust height for phones */
-          }
-        }
-  </style>
+@media (max-width: 576px) {
+  #map {
+    height: 200px; /* Adjust height for phones */
+  }
+}
+</style>
 
-<div class="row mt-4">
+<div class="row mt-4" data-listing-id="<%= listing._id %>" data-listing-price="<%= listing.price %>">
     <div class="col-8 offset-3">
         <h3><%= listing.title %></h3>
     </div>
@@ -88,10 +86,10 @@
     <br>
     <div class="stay-selector">
         <label for="startDate">Start Date:</label>
-        <input type="text" id="startDate" placeholder="Select start date" class="col-2" readonly>
+        <input type="text" id="startDate" placeholder="Select start date" class="col-3" readonly>
 
         <label for="endDate">End Date:</label>
-        <input type="text" id="endDate" placeholder="Select end date" class="col-2" readonly>
+        <input type="text" id="endDate" placeholder="Select end date" class="col-3" readonly>
     </div>
     <div class="price-details">
         <div class="price-item">
@@ -108,8 +106,14 @@
         </div>
     </div>
     <br>
-    <div id="payButton" class="total-price"> 
-      <button id="payButton" class="btn btn-dark col-3 offset-9 edit-btn">Pay and Book</button>
+    <div id="payButton" class="total-price">
+      <form id="bookingForm" action="/listing/bookings" method="POST">
+          <input type="hidden" name="listingId" value="<%= listing._id %>">
+          <input type="hidden" name="startDate" id="hiddenStartDate">
+          <input type="hidden" name="endDate" id="hiddenEndDate">
+          <input type="hidden" name="totalPrice" id="hiddenTotalPrice">
+          <button type="submit" class="btn btn-dark col-3 offset-9 edit-btn">Book Now</button>
+      </form>
     </div>
     
   </div>
@@ -161,65 +165,6 @@
   </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
-  const pricePerNight = <%= listing.price %>;
-  const gstRate = 0.18;
-
-  document.addEventListener('DOMContentLoaded', () => {
-      const basePriceSpan = document.getElementById('basePrice');
-      const gstAmountSpan = document.getElementById('gstAmount');
-      const totalPriceSpan = document.getElementById('totalPrice');
-      const startDatePicker = document.getElementById('startDate');
-      const endDatePicker = document.getElementById('endDate');
-
-      let startFlatpickr;
-      let endFlatpickr;
-
-      function calculateTotalPrice() {
-          const startDate = flatpickr.parseDate(startDatePicker.value, "Y-m-d");
-          const endDate = flatpickr.parseDate(endDatePicker.value, "Y-m-d");
-
-          if (startDate && endDate) {
-              const timeDifference = endDate - startDate;
-              const days = Math.ceil(timeDifference / (1000 * 3600 * 24)); // Ensure correct day calculation
-
-              if (days > 0) {
-                  const basePrice = days * pricePerNight;
-                  const gstAmount = basePrice * gstRate;
-                  const totalPrice = basePrice + gstAmount;
-
-                  basePriceSpan.textContent = basePrice.toFixed(2);
-                  gstAmountSpan.textContent = gstAmount.toFixed(2);
-                  totalPriceSpan.textContent = totalPrice.toFixed(2);
-              } else {
-                  basePriceSpan.textContent = "0.00";
-                  gstAmountSpan.textContent = "0.00";
-                  totalPriceSpan.textContent = "0.00";
-              }
-          }
-      }
-
-      startFlatpickr = flatpickr(startDatePicker, {
-          minDate: 'today',
-          onChange: function(selectedDates) {
-              if (selectedDates.length > 0) {
-                  const minEndDate = new Date(selectedDates[0]);
-                  minEndDate.setDate(minEndDate.getDate() + 1); // Set min end date to start date + 1 day
-                  endFlatpickr.set('minDate', minEndDate);
-                  calculateTotalPrice();
-              }
-          }
-      });
-
-      endFlatpickr = flatpickr(endDatePicker, {
-          minDate: 'today',
-          onChange: function() {
-              calculateTotalPrice();
-          }
-      });
-  });
-</script>
-
+<script src="/js/show.js"></script>
 <script src="/js/map.js"></script>

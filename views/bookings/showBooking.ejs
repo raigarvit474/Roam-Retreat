@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate") %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script>
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
+</script>
+<style>
+  .stay-selector {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+  }
+  .stay-selector label {
+      margin-bottom: 5px;
+  }
+  .stay-selector input {
+      margin-bottom: 10px;
+  }
+  .price-details {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+  }
+  .price-details .price-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+  }
+  .price-details .price-item span {
+      font-weight: bold;
+  }
+  .total-price {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+  }
+  #cancelButton:hover {
+      background-color: #eff2f5;
+  }
+  #map {
+    width: 100%;
+    height: 400px; /* Default height for larger screens */
+  }
+
+  @media (max-width: 768px) {
+    #map {
+      height: 300px; /* Adjust height for tablets */
+    }
+  }
+
+  @media (max-width: 576px) {
+    #map {
+      height: 200px; /* Adjust height for phones */
+    }
+  }
+</style>
+
+<div class="row mt-4">
+    <div class="col-8 offset-3">
+        <h3>Booking Details for <%= booking.listing.title %></h3>
+    </div>
+    <div class="card col-6 offset-3 show-card listing-card">
+        <img class="card-img-top show-img" src="<%= booking.listing.image.url %>" alt="listing_image">
+        <div class="card-body">
+            <p class="card-text">Owned By: <i><%= booking.listing.owner.username %></i></p>
+            <p class="card-text"><%= booking.listing.description %></p>
+            <p class="card-text">&#8377; <%= booking.listing.price.toLocaleString("en-IN") %></p>
+            <p class="card-text"><%= booking.listing.location %></p>
+            <p class="card-text"><%= booking.listing.country %></p>
+            <p class="card-text"><%= booking.listing.category %></p>
+            <br>
+            <p class="card-text"><b>Start Date:</b> <%= booking.startDate.toDateString() %></p>
+            <p class="card-text"><b>End Date:</b> <%= booking.endDate.toDateString() %></p>
+            <p class="card-text"><b>Total Amount:</b> &#8377;<%= booking.price.toLocaleString("en-IN") %></p>
+            <p class="card-text"><b>Status:</b> <%= booking.currentStatus %></p>
+            <br>
+        </div>
+    </div>
+    <br>
+
+    <% if(currUser && booking.user._id.equals(currUser._id) && booking.currentStatus=='Booked'){ %>
+        <div class="col-6 offset-3 mb-3">
+            <form method="POST" action="/listing/bookings/<%= booking._id %>/cancel">
+                <button class="btn btn-dark offset-5">Cancel Booking</button>
+            </form>
+        </div>
+    <% } %>
+
+    <div class="col-6 offset-3 mb-3">
+        <h3>Where you'll be</h3>
+        <div id="map"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="/js/show.js"></script>
+<script src="/js/map.js"></script>

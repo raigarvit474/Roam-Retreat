@@ -79,12 +79,12 @@
         <div class="navbar-nav ms-auto">
           <a class="nav-link" href="/listings/new">List Your Home</a>
           <% if(!currUser){ %>
-            <a class="nav-link" href="/signup"><b> SignUp </b></a>
-            <a class="nav-link" href="/login"><b>Log In</b></a>
+            <a class="nav-link" href="/users/signup"><b> SignUp </b></a>
+            <a class="nav-link" href="/users/login"><b>Log In</b></a>
           <% } %>
           <% if(currUser){ %>
-            <a class="nav-link" href="/user/profile">Your Account</a>
-            <a class="nav-link" href="/logout">Log Out</a>
+            <a class="nav-link" href="/users/profile">Your Account</a>
+            <a class="nav-link" href="/users/logout">Log Out</a>
           <% } %>
         </div>
       </div>
