@@ -1,5 +1,7 @@
 const Booking = require('../models/booking');
 const Listing = require('../models/listing');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapToken=process.env.MAP_TOKEN;
 
 module.exports.createBooking = async (req, res) => {
     const { listingId, startDate, endDate, totalPrice } = req.body;
