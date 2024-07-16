@@ -51,44 +51,36 @@
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-<!-- sticky-top is used so that when we scroll in a website the navbar must not disappear -->
-
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link" href="/listings">Roam Retreat</a>
-          
-        </div>
-
-        <div class="navbar-nav ms-auto">
-          <form class="d-flex align-items-center" role="search">
-            <input class="form-control mt-1 mb-1 me-2 search-inp" type="search" placeholder="Search destinations">
-            <button class="btn search-btn d-flex align-items-center" type="submit">
-              <i class="fa-solid fa-magnifying-glass me-1"></i> Search
-            </button>
-          </form>
-        </div>
-        
-
-
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link" href="/listings/new">List Your Home</a>
-          <% if(!currUser){ %>
-            <a class="nav-link" href="/users/signup"><b> SignUp </b></a>
-            <a class="nav-link" href="/users/login"><b>Log In</b></a>
-          <% } %>
-          <% if(currUser){ %>
-            <a class="nav-link" href="/users/profile">Your Account</a>
-            <a class="nav-link" href="/users/logout">Log Out</a>
-          <% } %>
-        </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/listings">Roam Retreat</a>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <form class="d-flex align-items-center" role="search" action="/listings/search" method="GET">
+          <input class="form-control mt-1 mb-1 me-2 search-inp" type="search" name="query" placeholder="Search destinations">
+          <button class="btn search-btn d-flex align-items-center" type="submit">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+          </button>
+        </form>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings/new">List Your Home</a>
+        <% if(!currUser){ %>
+          <a class="nav-link" href="/users/signup"><b> SignUp </b></a>
+          <a class="nav-link" href="/users/login"><b>Log In</b></a>
+        <% } %>
+        <% if(currUser){ %>
+          <a class="nav-link" href="/users/profile">Your Account</a>
+          <a class="nav-link" href="/users/logout">Log Out</a>
+        <% } %>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
 
   <!-- currUser is the User that is currently logged in . It is defined as a local in app.js as we cannot directly use req.user in ejs -->

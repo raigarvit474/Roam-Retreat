@@ -25,6 +25,7 @@ router
 
 //New Route
 router.get("/new",isLoggedIn,listingController.renderNewForm);
+router.get('/search', wrapAsync(listingController.searchListing));
 
 //get request is for showListing, put is for updateListing, delete is for delete listing
 router

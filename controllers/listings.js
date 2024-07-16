@@ -1,4 +1,5 @@
 const Listing=require("../models/listing");
+const Booking=require("../models/booking");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken=process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken});//to start the geoservice coding 
@@ -15,18 +16,28 @@ module.exports.renderNewForm=(req,res)=>{
     
 }
 
+module.exports.searchListing=async (req, res) => {
+    const { query } = req.query;
+    const regex = new RegExp(query, 'i'); // 'i' for case-insensitive
+    const listings = await Listing.find({
+        $or: [{ title: regex }, { location: regex }]
+    });
+    res.render('listings/searchResults', { listings, query });
+};
+
 module.exports.showListing=async (req,res)=>{
     let {id}=req.params;
     const listing=await Listing.findById(id).populate({
         path:"reviews",
         populate:{path:"author"},
     }).populate("owner");
+    const bookings = await Booking.find({ listing: id }).populate('user');
     if(!listing){
         req.flash("error","Listing you requested for does not exist!");
         res.redirect("/listings");
     }
     console.log(listing);
-    res.render("listings/show.ejs",{listing});
+    res.render("listings/show.ejs",{listing,bookings});
 }
 
 module.exports.createListing = async (req, res, next) => {
