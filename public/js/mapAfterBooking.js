@@ -4,7 +4,7 @@ const map = new mapboxgl.Map({
     // choose from mapbox,s core styles or make your own style with Mapbox studio
     style:"mapbox://styles/mapbox/streets-v12",
     center:listing.geometry.coordinates, // starting position [lng, lat]
-    zoom: 9 // starting zoom
+    zoom: 16 // starting zoom
 });
 
 
