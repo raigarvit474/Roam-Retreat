@@ -18,3 +18,14 @@ module.exports.reviewSchema=Joi.object({
         comment: Joi.string().required(),
     }).required()
 });
+
+module.exports.bookingSchema = Joi.object({
+    booking: Joi.object({
+        user: Joi.string().required(),
+        listing: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        startDate: Joi.date().required().min('now'),
+        endDate: Joi.date().required().greater(Joi.ref('startDate')),
+        currentStatus: Joi.string().required().valid('Not Booked', 'Booked', 'Cancelled')
+    }).required()
+});
