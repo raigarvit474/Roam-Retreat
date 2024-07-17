@@ -6,7 +6,7 @@ const { isLoggedIn,hasBooked,validateBooking } = require('../middleware');
 router.get('/:id', isLoggedIn,hasBooked, bookingController.showBooking);
 router.post('/:id/cancel',isLoggedIn,hasBooked,bookingController.cancelBooking);
 
-router.post('/', isLoggedIn,validateBooking, bookingController.createBooking);
+router.post('/', isLoggedIn, bookingController.createBooking);
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const Listing=require("./models/listing");
 const Review=require("./models/review");
 const ExpressError=require("./utils/ExpressError.js");
-const {listingSchema,reviewSchema}=require("./schema.js");
+const {listingSchema,reviewSchema,bookingSchema}=require("./schema.js");
 const Booking = require("./models/booking");
 
 module.exports.isLoggedIn=(req,res,next)=>{
@@ -70,12 +70,12 @@ module.exports.isReviewAuthor=async(req,res,next)=>{
     next();
 };
 
-module.exports.validateBooking = async (req, res, next) => {
-    let { error } = bookingSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }
+// module.exports.validateBooking = async (req, res, next) => {
+//     let { error } = bookingSchema.validate(req.body);
+//     if (error) {
+//         let errMsg = error.details.map((el) => el.message).join(",");
+//         throw new ExpressError(400, errMsg);
+//     }
 
-    next();
-};
+//     next();
+// };
